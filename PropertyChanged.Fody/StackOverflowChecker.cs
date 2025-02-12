@@ -54,7 +54,7 @@ public partial class ModuleWeaver
         if (propertyDefinition.SetMethod.IsVirtual)
         {
             var baseType = Resolve(propertyDefinition.DeclaringType.BaseType);
-            var baseProperty = baseType.Properties.FirstOrDefault(x => x.Name == propertyDefinition.Name);
+            var baseProperty = baseType.Properties.FirstOrDefault(_ => _.Name == propertyDefinition.Name);
 
             if (baseProperty != null && propertyDefinition.GetMethod != null)
             {
@@ -66,7 +66,7 @@ public partial class ModuleWeaver
                         continue;
                     }
 
-                    if (!(instruction.Operand is MethodReference operand))
+                    if (instruction.Operand is not MethodReference operand)
                     {
                         continue;
                     }

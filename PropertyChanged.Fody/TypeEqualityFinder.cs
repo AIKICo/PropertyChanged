@@ -11,14 +11,14 @@ public partial class ModuleWeaver
 
     public void FindComparisonMethods()
     {
-        methodCache = new Dictionary<string, MethodReference>();
+        methodCache = new();
 
         OrdinalStringComparison = (int)StringEquals
             .Parameters[2]
             .ParameterType
             .Resolve()
             .Fields
-            .First(x => x.Name == "Ordinal")
+            .First(_ => _.Name == "Ordinal")
             .Constant;
 
         NotifyNodes.ForEach(FindComparisonMethods);
@@ -145,7 +145,7 @@ public partial class ModuleWeaver
         return equality;
     }
 
-    TypeReference GetBaseType(TypeReference typeReference)
+    static TypeReference GetBaseType(TypeReference typeReference)
     {
         var typeDef = typeReference as TypeDefinition ?? typeReference.Resolve();
         var baseType = typeDef?.BaseType;
@@ -219,13 +219,13 @@ public partial class ModuleWeaver
     static MethodReference FindNamedMethod(TypeDefinition typeDefinition, string methodName, TypeReference parameterType)
     {
         MethodReference reference = typeDefinition.Methods
-            .FirstOrDefault(x => x.Name == methodName &&
-                                 x.IsStatic &&
-                                 x.ReturnType.Name == "Boolean" &&
-                                 x.HasParameters &&
-                                 x.Parameters.Count == 2 &&
-                                 MatchParameter(x.Parameters[0], parameterType) &&
-                                 MatchParameter(x.Parameters[1], parameterType));
+            .FirstOrDefault(_ => _.Name == methodName &&
+                                 _.IsStatic &&
+                                 _.ReturnType.Name == "Boolean" &&
+                                 _.HasParameters &&
+                                 _.Parameters.Count == 2 &&
+                                 MatchParameter(_.Parameters[0], parameterType) &&
+                                 MatchParameter(_.Parameters[1], parameterType));
 
         if (reference != null || typeDefinition == parameterType)
         {

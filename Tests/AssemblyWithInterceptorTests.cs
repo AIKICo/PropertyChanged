@@ -1,16 +1,14 @@
 ﻿using System.Reflection;
-using Fody;
-using Xunit;
 
 public class AssemblyWithInterceptorTests
 {
     [Fact]
     public void Simple()
     {
-        var weavingTask = new ModuleWeaver();
-        var testResult = weavingTask.ExecuteTestRun(
+        var task = new ModuleWeaver();
+        var testResult = task.ExecuteTestRun(
             "AssemblyWithInterceptor.dll",
-            ignoreCodes: new[] {"0x80131869"});
+            ignoreCodes: ["0x80131869"]);
 
         var assembly = testResult.Assembly;
         var instance = assembly.GetInstance("ClassToTest");
@@ -24,10 +22,10 @@ public class AssemblyWithInterceptorTests
     [Fact]
     public void BeforeAfter()
     {
-        var weavingTask = new ModuleWeaver();
-        var testResult = weavingTask.ExecuteTestRun(
+        var weaver = new ModuleWeaver();
+        var testResult = weaver.ExecuteTestRun(
             "AssemblyWithBeforeAfterInterceptor.dll",
-            ignoreCodes: new[] {"0x80131869"});
+            ignoreCodes: ["0x80131869"]);
         var assembly = testResult.Assembly;
         var instance = assembly.GetInstance("ClassToTest");
         EventTester.TestProperty(instance, false);

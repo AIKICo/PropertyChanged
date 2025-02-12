@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
-using System.Linq;
 using Mono.Cecil;
-using Xunit;
 
 public class MethodFinderTest
 {
@@ -12,18 +10,18 @@ public class MethodFinderTest
     {
         var location = typeof(MethodFinderTest).Assembly.Location;
         var module = ModuleDefinition.ReadModule(location);
-        methodFinder = new ModuleWeaver
-                               {
-                                   ModuleDefinition = module
-                               };
+        methodFinder = new()
+        {
+            ModuleDefinition = module
+        };
 
-        typeDefinition = module.Types.First(x => x.Name.EndsWith("MethodFinderTest"));
+        typeDefinition = module.Types.First(_ => _.Name.EndsWith("MethodFinderTest"));
     }
 
     [Fact]
     public void WithStringParamTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "WithStringParam");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "WithStringParam");
         var methodReference = methodFinder.RecursiveFindEventInvoker(definitionToProcess);
         Assert.NotNull(methodReference);
         Assert.Equal("OnPropertyChanged", methodReference.MethodReference.Name);
@@ -40,7 +38,7 @@ public class MethodFinderTest
     [Fact]
     public void WithStringAndBeforeAfterParamTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "WithStringAndBeforeAfter");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "WithStringAndBeforeAfter");
         var methodReference = methodFinder.RecursiveFindEventInvoker(definitionToProcess);
         Assert.NotNull(methodReference);
         Assert.Equal("OnPropertyChanged", methodReference.MethodReference.Name);
@@ -57,7 +55,7 @@ public class MethodFinderTest
     [Fact]
     public void WithPropertyChangedArgTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "WithPropertyChangedArg");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "WithPropertyChangedArg");
         var methodReference = methodFinder.RecursiveFindEventInvoker(definitionToProcess);
         Assert.NotNull(methodReference);
         Assert.Equal("OnPropertyChanged", methodReference.MethodReference.Name);
@@ -74,7 +72,7 @@ public class MethodFinderTest
     [Fact]
     public void WithSenderPropertyChangedArgTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "WithSenderPropertyChangedArg");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "WithSenderPropertyChangedArg");
         var methodReference = methodFinder.RecursiveFindEventInvoker(definitionToProcess);
         Assert.NotNull(methodReference);
         Assert.Equal("OnPropertyChanged", methodReference.MethodReference.Name);
@@ -91,17 +89,16 @@ public class MethodFinderTest
     [Fact]
     public void NoMethodTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "NoMethod");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "NoMethod");
         Assert.Null(methodFinder.RecursiveFindEventInvoker(definitionToProcess));
     }
 
-    public class NoMethod
-    {
-    }
+    public class NoMethod;
+
     [Fact]
     public void NoParamsTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "NoParams");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "NoParams");
         Assert.Null(methodFinder.RecursiveFindEventInvoker(definitionToProcess));
     }
 
@@ -115,7 +112,7 @@ public class MethodFinderTest
     [Fact]
     public void WrongParamsTest()
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == "WrongParams");
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == "WrongParams");
         Assert.Null(methodFinder.RecursiveFindEventInvoker(definitionToProcess));
     }
 
@@ -131,7 +128,7 @@ public class MethodFinderTest
     [InlineData(nameof(ClassWithMultipleInvokersEventArgsFirst))]
     public void PreferEventArgsOverString(string typeName)
     {
-        var definitionToProcess = typeDefinition.NestedTypes.First(x => x.Name == typeName);
+        var definitionToProcess = typeDefinition.NestedTypes.First(_ => _.Name == typeName);
         var methodReference = methodFinder.RecursiveFindEventInvoker(definitionToProcess);
         Assert.NotNull(methodReference);
         Assert.Equal("OnPropertyChanged", methodReference.MethodReference.Name);

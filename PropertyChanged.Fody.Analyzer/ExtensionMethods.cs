@@ -21,7 +21,7 @@ static class ExtensionMethods
 
     public static IEnumerable<BaseTypeSyntax> GetInterfaceTypeCandidates(this BaseListSyntax? baseListSyntax)
     {
-        return baseListSyntax == null ? Enumerable.Empty<BaseTypeSyntax>() : baseListSyntax.Types.Where(type => type.ToString().EndsWith("INotifyPropertyChanged"));
+        return baseListSyntax == null ? [] : baseListSyntax.Types.Where(type => type.ToString().EndsWith("INotifyPropertyChanged"));
     }
 
     public static string? NullIfEmpty(this string? value)

@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using AssemblyWithBase.BaseWithEquals;
-using Fody;
+﻿using AssemblyWithBase.BaseWithEquals;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Xunit;
 
 public class AssemblyWithBaseInDifferentModuleTests
 {
@@ -15,7 +12,7 @@ public class AssemblyWithBaseInDifferentModuleTests
         {
             UseStaticEqualsFromBase = useStaticEqualsFromBase
         };
-        testResult = weavingTask.ExecuteTestRun("AssemblyWithBaseInDifferentModule.dll", ignoreCodes:new []{ "0x80131869" });
+        testResult = weavingTask.ExecuteTestRun("AssemblyWithBaseInDifferentModule.dll", ignoreCodes: ["0x80131869"]);
     }
 
     [Fact]
@@ -155,14 +152,14 @@ public class AssemblyWithBaseInDifferentModuleTests
         Assert.True(instance.Property2.StaticEqualsCalled);
         instance.Property2.StaticEqualsCalled = false;
     }
-    
+
     [Fact]
     public void ClassWithGenericTypeInInheritanceChainUsesCorrectEventInvoker()
     {
         // Issue #477
-        
+
         Weave(false);
-        
+
         using (var module = ModuleDefinition.ReadModule(testResult.AssemblyPath))
         {
             var typeDef = module.GetType(nameof(ClassWithGenericMiddleChildInDifferentModule));

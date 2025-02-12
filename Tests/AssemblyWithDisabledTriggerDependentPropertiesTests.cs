@@ -1,19 +1,16 @@
-using Fody;
-using Xunit;
-
 public class AssemblyWithDisabledTriggerDependentPropertiesTests
 {
     static TestResult testResult;
 
     static AssemblyWithDisabledTriggerDependentPropertiesTests()
     {
-        var weavingTaskFalse = new ModuleWeaver
+        var task = new ModuleWeaver
         {
             TriggerDependentProperties = false
         };
-        testResult = weavingTaskFalse.ExecuteTestRun(
+        testResult = task.ExecuteTestRun(
             "AssemblyWithDisabledTriggerDependentProperties.dll",
-            ignoreCodes: new[] {"0x80131869"});
+            ignoreCodes: ["0x80131869"]);
     }
 
     [Fact]

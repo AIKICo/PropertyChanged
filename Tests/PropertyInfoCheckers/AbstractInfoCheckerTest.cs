@@ -1,31 +1,36 @@
-﻿using System.Linq;
-using Xunit;
-
-public class AbstractInfoCheckerTest
+﻿public class AbstractInfoCheckerTest
 {
     [Fact]
     public void IsAbstract()
     {
-        var checker = new ModuleWeaver();
+        var weaver = new ModuleWeaver();
         var propertyDefinition = DefinitionFinder.FindType<BaseClass>()
             .Properties
-            .First(x => x.Name == "AbstractProperty");
+            .First(_ => _.Name == "AbstractProperty");
 
-        var message = checker.CheckForWarning(new PropertyData
-            {PropertyDefinition = propertyDefinition,}, InvokerTypes.String);
+        var message = weaver.CheckForWarning(
+            new()
+            {
+                PropertyDefinition = propertyDefinition,
+            },
+            InvokerTypes.String);
         Assert.NotNull(message);
     }
 
     [Fact]
     public void NonAbstract()
     {
-        var checker = new ModuleWeaver();
+        var weaver = new ModuleWeaver();
         var propertyDefinition = DefinitionFinder.FindType<BaseClass>()
             .Properties
-            .First(x => x.Name == "NonAbstractProperty");
+            .First(_ => _.Name == "NonAbstractProperty");
 
-        var message = checker.CheckForWarning(new PropertyData
-            {PropertyDefinition = propertyDefinition,}, InvokerTypes.String);
+        var message = weaver.CheckForWarning(
+            new()
+            {
+                PropertyDefinition = propertyDefinition,
+            },
+            InvokerTypes.String);
         Assert.Null(message);
     }
 

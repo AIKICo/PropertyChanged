@@ -1,16 +1,13 @@
-﻿using Fody;
-using Xunit;
-
-public class TypeFilterTests
+﻿public class TypeFilterTests
 {
     TestResult testResult;
 
     public TypeFilterTests()
     {
-        var weavingTask = new ModuleWeaver();
-        testResult = weavingTask.ExecuteTestRun(
+        var weaver = new ModuleWeaver();
+        testResult = weaver.ExecuteTestRun(
             "AssemblyWithTypeFilter.dll",
-            ignoreCodes: new[] {"0x80131869"});
+            ignoreCodes: ["0x80131869"]);
     }
 
     [Fact]

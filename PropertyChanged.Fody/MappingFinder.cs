@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 
 public partial class ModuleWeaver
 {
-    void FindMappings(List<TypeNode> notifyNodes)
+    static void FindMappings(List<TypeNode> notifyNodes)
     {
         foreach (var node in notifyNodes)
         {
@@ -20,18 +20,20 @@ public partial class ModuleWeaver
         foreach (var property in typeDefinition.Properties)
         {
             var fieldDefinition = TryGetField(typeDefinition, property);
-            yield return new MemberMapping
-                             {
-                                 PropertyDefinition = property,
-                                 FieldDefinition = fieldDefinition
-                             };
+            yield return new()
+            {
+                PropertyDefinition = property,
+                FieldDefinition = fieldDefinition
+            };
         }
     }
 
     static FieldDefinition TryGetField(TypeDefinition typeDefinition, PropertyDefinition property)
     {
         var propertyName = property.Name;
-        var fieldsWithSameType = typeDefinition.Fields.Where(x => x.DeclaringType == typeDefinition && x.FieldType.Resolve() == property.PropertyType.Resolve()).ToList();
+        var fieldsWithSameType = typeDefinition.Fields
+            .Where(_ => _.DeclaringType == typeDefinition &&
+                        _.FieldType.Resolve() == property.PropertyType.Resolve()).ToList();
         foreach (var field in fieldsWithSameType)
         {
             //AutoProp
@@ -86,7 +88,7 @@ public partial class ModuleWeaver
                     return null;
                 }
 
-                if (!(instruction.Operand is FieldReference field))
+                if (instruction.Operand is not FieldReference field)
                 {
                     continue;
                 }

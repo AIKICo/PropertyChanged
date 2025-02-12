@@ -12,15 +12,16 @@ public partial class ModuleWeaver
         {
             return null;
         }
+
         var propertyNamesToNotify = GetPropertyNamesToNotify(notifyAttribute, property, allProperties);
 
-        return new NotifyPropertyData
-                   {
-                       AlsoNotifyFor = propertyNamesToNotify.ToList(),
-                   };
+        return new()
+        {
+            AlsoNotifyFor = propertyNamesToNotify.ToList(),
+        };
     }
 
-    IEnumerable<PropertyDefinition> GetPropertyNamesToNotify(CustomAttribute notifyAttribute, PropertyDefinition property, List<PropertyDefinition> allProperties)
+    static IEnumerable<PropertyDefinition> GetPropertyNamesToNotify(CustomAttribute notifyAttribute, PropertyDefinition property, List<PropertyDefinition> allProperties)
     {
         var customAttributeArguments = notifyAttribute.ConstructorArguments.ToList();
         var value = (string)customAttributeArguments[0].Value;
@@ -38,7 +39,7 @@ public partial class ModuleWeaver
 
     static PropertyDefinition GetPropertyDefinition(PropertyDefinition property, List<PropertyDefinition> allProperties, string argument)
     {
-        var propertyDefinition = allProperties.FirstOrDefault(x => x.Name == argument);
+        var propertyDefinition = allProperties.FirstOrDefault(_ => _.Name == argument);
         if (propertyDefinition != null)
         {
             return propertyDefinition;

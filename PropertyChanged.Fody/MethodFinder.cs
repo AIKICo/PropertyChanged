@@ -13,12 +13,12 @@ public partial class ModuleWeaver
             if (eventInvoker.MethodReference.DeclaringType.ContainsGenericParameter)
             {
                 var methodReference = MakeGeneric(node.TypeDefinition.BaseType, eventInvoker.MethodReference);
-                eventInvoker = new EventInvokerMethod
-                                   {
-                                       InvokerType = eventInvoker.InvokerType,
-                                       MethodReference = methodReference,
-                                       IsVisibleFromChildren = eventInvoker.IsVisibleFromChildren
-                                   };
+                eventInvoker = new()
+                {
+                    InvokerType = eventInvoker.InvokerType,
+                    MethodReference = methodReference,
+                    IsVisibleFromChildren = eventInvoker.IsVisibleFromChildren
+                };
             }
         }
         else
@@ -54,26 +54,28 @@ public partial class ModuleWeaver
             {
                 break;
             }
+
             var baseType = currentTypeDefinition.BaseType;
 
             if (baseType == null || baseType.FullName == "System.Object")
             {
                 return null;
             }
+
             currentTypeDefinition = Resolve(baseType);
         } while (true);
 
-        return new EventInvokerMethod
-                   {
-                       MethodReference = GetMethodReference(typeDefinitions, methodDefinition),
-                       IsVisibleFromChildren = IsVisibleFromChildren(methodDefinition),
-                       InvokerType = ClassifyInvokerMethod(methodDefinition),
-                   };
+        return new()
+        {
+            MethodReference = GetMethodReference(typeDefinitions, methodDefinition),
+            IsVisibleFromChildren = IsVisibleFromChildren(methodDefinition),
+            InvokerType = ClassifyInvokerMethod(methodDefinition),
+        };
     }
 
     static bool IsVisibleFromChildren(MethodDefinition method)
     {
-        return method.IsFamilyOrAssembly || 
+        return method.IsFamilyOrAssembly ||
                method.IsFamily ||
                method.IsFamilyAndAssembly ||
                method.IsPublic;
@@ -88,7 +90,7 @@ public partial class ModuleWeaver
             var overriddenMethod = FindExplicitImplementation(type);
             if (overriddenMethod != null)
             {
-                return new EventInvokerMethod
+                return new()
                 {
                     MethodReference = ModuleDefinition.ImportReference(overriddenMethod).GetGeneric(),
                     IsVisibleFromChildren = true,
@@ -103,7 +105,7 @@ public partial class ModuleWeaver
         }
 
         var methodReference = ModuleDefinition.ImportReference(methodDefinition);
-        return new EventInvokerMethod
+        return new()
         {
             MethodReference = methodReference.GetGeneric(),
             IsVisibleFromChildren = IsVisibleFromChildren(methodDefinition),
@@ -129,10 +131,7 @@ public partial class ModuleWeaver
             .OrderByDescending(GetInvokerPriority)
             .FirstOrDefault(IsEventInvokerMethod);
 
-        if (methodDefinition != null &&
-            methodDefinition.IsPrivate &&
-            methodDefinition.IsFinal &&
-            methodDefinition.IsVirtual &&
+        if (methodDefinition is {IsPrivate: true, IsFinal: true, IsVirtual: true} &&
             methodDefinition.Overrides.Count == 1)
         {
             // Explicitly implemented interfaces should call the interface method instead
@@ -146,7 +145,7 @@ public partial class ModuleWeaver
     {
         return type.GetAllInterfaces()
             .Select(i => i.Resolve())
-            .Where(i => i != null && i.IsPublic)
+            .Where(i => i is {IsPublic: true})
             .SelectMany(i => i.Methods.Where(m => EventInvokerNames.Contains($"{i.FullName}.{m.Name}")))
             .OrderByDescending(GetInvokerPriority)
             .FirstOrDefault(IsEventInvokerMethod);

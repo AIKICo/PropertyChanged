@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using Mono.Cecil;
-using Xunit;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable ConvertToAutoPropertyWhenPossible
@@ -149,7 +147,7 @@ public class HasEqualityCheckerTests
     }
     FieldDefinition GetField(string equalityShortcut)
     {
-        return fields.First(x => x.Name == equalityShortcut);
+        return fields.First(_ => _.Name == equalityShortcut);
     }
 
     int intField;

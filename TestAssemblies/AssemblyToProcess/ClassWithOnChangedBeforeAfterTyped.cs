@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-
 using PropertyChanged;
 
 public class ClassWithOnChangedBeforeAfterTyped :
@@ -55,7 +53,7 @@ public class ClassWithOnChangedBeforeAfterTypedWithGenericObject :
 
     static string ToString<T>(IEnumerable<T> value)
     {
-        return string.Join(",", value ?? Enumerable.Empty<T>());
+        return string.Join(",", value ?? []);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -108,10 +106,6 @@ public class ClassWithOnChangedBeforeAfterTypedGeneric<T> :
     public event PropertyChangedEventHandler PropertyChanged;
 }
 
-public class ClassWithOnChangedBeforeAfterTypedGenericString : ClassWithOnChangedBeforeAfterTypedGeneric<string>
-{
-}
+public class ClassWithOnChangedBeforeAfterTypedGenericString : ClassWithOnChangedBeforeAfterTypedGeneric<string>;
 
-public class ClassWithOnChangedBeforeAfterTypedGenericInteger : ClassWithOnChangedBeforeAfterTypedGeneric<int>
-{
-}
+public class ClassWithOnChangedBeforeAfterTypedGenericInteger : ClassWithOnChangedBeforeAfterTypedGeneric<int>;

@@ -1,20 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Mono.Cecil;
-using Xunit;
 
 [SuppressMessage("ReSharper", "NotAccessedField.Local")]
 [SuppressMessage("ReSharper", "DelegateSubtraction")]
 public class MethodInjectorTests
 {
-    public MethodInjectorTests()
-    {
-        methodInjector = new ModuleWeaver
-        {
-            ModuleDefinition = ModuleDefinition.ReadModule(typeof(MethodInjectorTests).Assembly.Location)
-        };
-    }
-
     [Fact]
     public void ShouldFindCorrectHandlerFieldInDefaultImpl()
     {
@@ -101,7 +92,10 @@ public class MethodInjectorTests
         Assert.Null(field);
     }
 
-    ModuleWeaver methodInjector;
+    ModuleWeaver methodInjector = new()
+    {
+        ModuleDefinition = ModuleDefinition.ReadModule(typeof(MethodInjectorTests).Assembly.Location)
+    };
 #pragma warning disable CS0067, CS0169, CS0649
 
     class ClassWithMultipleHandlerFieldsDefaultImpl :

@@ -4,8 +4,8 @@ using Mono.Cecil;
 
 public partial class ModuleWeaver
 {
-    HashSet<string> typeLevelAttributeNames = new HashSet<string>
-    {
+    HashSet<string> typeLevelAttributeNames =
+    [
         "PropertyChanged.DoNotCheckEqualityAttribute",
         "PropertyChanged.DoNotNotifyAttribute",
         "PropertyChanged.DoNotSetChangedAttribute",
@@ -14,12 +14,9 @@ public partial class ModuleWeaver
         "PropertyChanged.AddINotifyPropertyChangedInterfaceAttribute",
         "PropertyChanged.SuppressPropertyChangedWarningsAttribute",
         "PropertyChanged.OnChangedMethodAttribute"
-    };
+    ];
 
-    HashSet<string> assemblyLevelAttributeNames = new HashSet<string>
-    {
-        "PropertyChanged.FilterTypeAttribute"
-    };
+    HashSet<string> assemblyLevelAttributeNames = ["PropertyChanged.FilterTypeAttribute"];
 
     void ProcessAssembly()
     {
@@ -30,17 +27,17 @@ public partial class ModuleWeaver
     void ProcessType(TypeDefinition type)
     {
         RemoveAttributes(type, typeLevelAttributeNames);
-        
+
         foreach (var property in type.Properties)
         {
             RemoveAttributes(property, typeLevelAttributeNames);
         }
-        
+
         foreach (var field in type.Fields)
         {
             RemoveAttributes(field, typeLevelAttributeNames);
         }
-        
+
         foreach (var method in type.Methods)
         {
             RemoveAttributes(method, typeLevelAttributeNames);
@@ -50,8 +47,10 @@ public partial class ModuleWeaver
     static void RemoveAttributes(ICustomAttributeProvider member, IEnumerable<string> attributeNames)
     {
         if (!member.HasCustomAttributes)
+        {
             return;
-        
+        }
+
         var attributes = member.CustomAttributes
             .Where(attribute => attributeNames.Contains(attribute.Constructor.DeclaringType.FullName));
 

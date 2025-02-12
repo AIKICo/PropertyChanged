@@ -10,7 +10,7 @@ public partial class ModuleWeaver
 
     void SearchForMethod(TypeDefinition typeDefinition)
     {
-        var methodDefinition = typeDefinition.Methods.FirstOrDefault(x => x.Name == "Intercept");
+        var methodDefinition = typeDefinition.Methods.FirstOrDefault(_ => _.Name == "Intercept");
         if (methodDefinition == null)
         {
             throw new WeavingException($"Found Type '{typeDefinition.FullName}' but could not find a method named 'Intercept'.");
@@ -38,10 +38,12 @@ public partial class ModuleWeaver
             InterceptorType = InvokerTypes.BeforeAfter;
             return;
         }
-        var message = $@"Found '{typeDefinition.FullName}.Intercept' But the signature is not correct. It needs to be either.
-Intercept(object target, Action firePropertyChanged, string propertyName)
-or
-Intercept(object target, Action firePropertyChanged, string propertyName, object before, object after)";
+        var message = $"""
+                       Found '{typeDefinition.FullName}.Intercept' But the signature is not correct. It needs to be either.
+                       Intercept(object target, Action firePropertyChanged, string propertyName)
+                       or
+                       Intercept(object target, Action firePropertyChanged, string propertyName, object before, object after)
+                       """;
         throw new WeavingException(message);
     }
 
@@ -67,7 +69,7 @@ Intercept(object target, Action firePropertyChanged, string propertyName, object
 
     public void FindInterceptor()
     {
-        var typeDefinition = ModuleDefinition.Types.FirstOrDefault(x => x.Name == "PropertyChangedNotificationInterceptor");
+        var typeDefinition = ModuleDefinition.Types.FirstOrDefault(_ => _.Name == "PropertyChangedNotificationInterceptor");
         if (typeDefinition == null)
         {
             FoundInterceptor = false;

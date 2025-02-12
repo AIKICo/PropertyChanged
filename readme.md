@@ -1,17 +1,21 @@
 # <img src="/package_icon.png" height="30px"> PropertyChanged.Fody
 
-[![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg)](https://gitter.im/Fody/Fody)
 [![NuGet Status](https://img.shields.io/nuget/v/PropertyChanged.Fody.svg)](https://www.nuget.org/packages/PropertyChanged.Fody/)
 
 Injects code which raises the [`PropertyChanged` event](https://msdn.microsoft.com/en-us/library/system.componentmodel.inotifypropertychanged.propertychanged.aspx), into property setters of classes which implement [INotifyPropertyChanged](https://msdn.microsoft.com/en-us/library/system.componentmodel.inotifypropertychanged.aspx).
+
+
+**See [Milestones](../../milestones?state=closed) for release notes.**
 
 ## This is an add-in for [Fody](https://github.com/Fody/Home/)
 
 **It is expected that all developers using Fody [become a Patron on OpenCollective](https://opencollective.com/fody/contribute/patron-3059). [See Licensing/Patron FAQ](https://github.com/Fody/Home/blob/master/pages/licensing-patron-faq.md) for more information.**
 
+
 ## Usage
 
 See also [Fody usage](https://github.com/Fody/Home/blob/master/pages/usage.md).
+
 
 ### NuGet installation
 
@@ -24,6 +28,7 @@ PM> Install-Package PropertyChanged.Fody
 
 The `Install-Package Fody` is required since NuGet always defaults to the oldest, and most buggy, version of any dependency.
 
+
 ### Add to FodyWeavers.xml
 
 Add `<PropertyChanged/>` to [FodyWeavers.xml](https://github.com/Fody/Home/blob/master/pages/usage.md#add-fodyweaversxml)
@@ -33,6 +38,7 @@ Add `<PropertyChanged/>` to [FodyWeavers.xml](https://github.com/Fody/Home/blob/
   <PropertyChanged/>
 </Weavers>
 ```
+
 
 ## Overview
 
@@ -106,6 +112,7 @@ internal static class InternalEventArgsCache
 
 (the actual injected type and method names are different)
 
+
 ## Code Generator
 
 Starting with version 4 PropertyChanged.Fody ships with a C# code generator that can even more simplify your code by generating
@@ -161,6 +168,7 @@ You can configure the code generator via properties in your project file:
 - *IsCodeGeneratorDisabled*: Set to `true` to switch off the code generator.
 - *EventInvokerName*: Change the name of the event invoker method from `OnPropertyChanged` to your favorite name.
 
+
 ### Workaround for WPF projects targeting multiple frameworks:
 
 WPF projects targeting multiple frameworks may fail during the compilation of the `*_wpftmp.csproj` with 
@@ -186,6 +194,7 @@ This can be fixed by adding this build target to your project:
 
 ---
 
+
 ## Notes
 
 - **Dependent properties** — In the above sample, the getter for `FullName` depends on the getters for `GivenName` and `FamilyName`. Therefore, when either `GivenName` or `FamilyName` is set, `PropertyChanged` is raised for `FullName` as well.   This behavior can be configured manually using the [`AlsoNotifyFor` attribute](https://github.com/Fody/PropertyChanged/wiki/Attributes#alsonotifyforattribute) on the source property, or the [`DependsOn` attribute](https://github.com/Fody/PropertyChanged/wiki/Attributes#dependsonattribute) on the target property).
@@ -203,6 +212,7 @@ This can be fixed by adding this build target to your project:
 - Behavior is configured via [attributes](https://github.com/Fody/PropertyChanged/wiki/Attributes), or via [options in the `Weavers.xml` file](https://github.com/Fody/PropertyChanged/wiki/Options).
 
 For more information, see the [wiki pages](https://github.com/Fody/PropertyChanged/wiki).
+
 
 ## Icon
 

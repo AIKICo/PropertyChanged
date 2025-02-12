@@ -19,13 +19,13 @@ public partial class ModuleWeaver
 
         allClasses = ModuleDefinition
             .GetTypes()
-            .Where(x => x.IsClass && x.BaseType != null)
+            .Where(_ => _.IsClass &&
+                        _.BaseType != null)
             .Where(extraFilter)
             .ToList();
-        Nodes = new List<TypeNode>();
-        NotifyNodes = new List<TypeNode>();
-        TypeDefinition typeDefinition;
-        while ((typeDefinition = allClasses.FirstOrDefault()) != null)
+        Nodes = new();
+        NotifyNodes = new();
+        while (allClasses.FirstOrDefault() is { } typeDefinition)
         {
             AddClass(typeDefinition);
         }
@@ -108,7 +108,7 @@ public partial class ModuleWeaver
         return typeNode;
     }
 
-    TypeNode FindClassNode(TypeDefinition type, IEnumerable<TypeNode> typeNode)
+    static TypeNode FindClassNode(TypeDefinition type, IEnumerable<TypeNode> typeNode)
     {
         foreach (var node in typeNode)
         {

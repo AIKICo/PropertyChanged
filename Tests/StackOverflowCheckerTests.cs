@@ -1,21 +1,12 @@
-﻿using System.Linq;
-using Fody;
-using Xunit;
-
-public class StackOverflowCheckerTests
+﻿public class StackOverflowCheckerTests
 {
-    ModuleWeaver stackOverflowChecker;
-
-    public StackOverflowCheckerTests()
-    {
-        stackOverflowChecker = new ModuleWeaver();
-    }
+    ModuleWeaver stackOverflowChecker = new();
 
     [Fact]
     public void CanDetectStackOverflow()
     {
-        var weavingTask = new ModuleWeaver();
-        Assert.Throws<WeavingException>(() => { weavingTask.ExecuteTestRun("AssemblyWithStackOverflow.dll"); });
+        var weaver = new ModuleWeaver();
+        Assert.Throws<WeavingException>(() => { weaver.ExecuteTestRun("AssemblyWithStackOverflow.dll"); });
     }
 
     [Theory]
@@ -23,7 +14,7 @@ public class StackOverflowCheckerTests
     [InlineData("ValidName", false)]
     public void CanCheckIfGetterCallsSetter(string propertyName, bool expectedResult)
     {
-        var propertyDefinition = DefinitionFinder.FindType<ClassWithStackOverflow>().Properties.First(x => x.Name == propertyName);
+        var propertyDefinition = DefinitionFinder.FindType<ClassWithStackOverflow>().Properties.First(_ => _.Name == propertyName);
         var result = stackOverflowChecker.CheckIfGetterCallsSetter(propertyDefinition);
 
         Assert.Equal(expectedResult, result);
@@ -32,7 +23,7 @@ public class StackOverflowCheckerTests
     [Fact]
     public void CanDetectIfGetterCallsVirtualBaseSetter()
     {
-        var propertyDefinition = DefinitionFinder.FindType<ChildClassWithOverflow>().Properties.First(x => x.Name == "Property1");
+        var propertyDefinition = DefinitionFinder.FindType<ChildClassWithOverflow>().Properties.First(_ => _.Name == "Property1");
         var result = stackOverflowChecker.CheckIfGetterCallsVirtualBaseSetter(propertyDefinition);
 
         Assert.True(result);
@@ -41,7 +32,7 @@ public class StackOverflowCheckerTests
     [Fact]
     public void CanDetectIfGetterCallsVirtualBaseSetterWhenBaseClassInDifferentAssembly()
     {
-        var propertyDefinition = DefinitionFinder.FindType<ChildWithBaseInDifferentAssembly>().Properties.First(x => x.Name == "Property1");
+        var propertyDefinition = DefinitionFinder.FindType<ChildWithBaseInDifferentAssembly>().Properties.First(_ => _.Name == "Property1");
         var result = stackOverflowChecker.CheckIfGetterCallsVirtualBaseSetter(propertyDefinition);
 
         Assert.True(result);
